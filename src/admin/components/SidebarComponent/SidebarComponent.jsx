@@ -1,16 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiHome, FiLogOut } from "react-icons/fi";
-import logo from "../../../assets/images/logo.png";
+import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../../context/AuthContext";
 import { IoReceiptOutline } from "react-icons/io5";
 
 function SidebarComponent({ isOpen, toggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { handleLogout, token } = useAuth();
+  const { handleLogout } = useAuth();
 
   const menuItems = [
-    { name: "Doanh thu", path: "/admin/dashboard", icon: <FiHome size={20} /> },
     {
       name: "Quản lý hoá đơn",
       path: "/admin/invoices",
@@ -22,14 +20,6 @@ function SidebarComponent({ isOpen, toggleSidebar }) {
       icon: <IoReceiptOutline size={20} />,
     },
   ];
-
-  const handleLogoClick = () => {
-    if (token) {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/admin");
-    }
-  };
 
   return (
     <div>
@@ -45,16 +35,7 @@ function SidebarComponent({ isOpen, toggleSidebar }) {
     ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
     overflow-y-auto`}
       >
-        <div className="flex items-center justify-center my-5">
-          <img
-            onClick={handleLogoClick}
-            src={logo}
-            alt="Logo WTM"
-            className="w-48 cursor-pointer"
-          />
-        </div>
-
-        <nav>
+        <nav className="mt-20">
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.path} onClick={toggleSidebar}>

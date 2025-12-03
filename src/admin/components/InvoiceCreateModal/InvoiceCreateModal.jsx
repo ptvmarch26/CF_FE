@@ -119,7 +119,7 @@ const InvoiceCreateModal = ({ open, setOpen }) => {
       title="Tạo Hóa Đơn"
       footer={null}
     >
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {/* DANH SÁCH MÓN – CLICK GRID */}
         <div className="col-span-2 h-[350px] overflow-y-auto border p-3 rounded-md">
           {sortedCategories.map((cat) => (
@@ -152,7 +152,7 @@ const InvoiceCreateModal = ({ open, setOpen }) => {
         </div>
 
         {/* FORM CHI TIẾT */}
-        <div className="col-span-1 flex flex-col gap-3">
+        <div className="col-span-2 flex flex-col gap-3">
           <div>
             <label className="font-semibold">Số lượng</label>
             <InputNumber

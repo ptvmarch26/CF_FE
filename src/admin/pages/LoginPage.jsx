@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/admin/dashboard", { replace: true });
+      navigate("/admin/invoices", { replace: true });
     }
   }, [token, navigate]);
 

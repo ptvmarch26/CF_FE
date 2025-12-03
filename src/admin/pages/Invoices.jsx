@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Button } from "antd";
-import { ExportOutlined } from "@ant-design/icons";
+import { Table, Button, DatePicker } from "antd";
 import { useInvoice } from "../../context/InvoiceContext";
 import InvoiceCreateModal from "../components/InvoiceCreateModal/InvoiceCreateModal";
 
@@ -10,6 +9,9 @@ const Invoices = () => {
   const [searchText, setSearchText] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
 
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [revenue, setRevenue] = useState(0);
+
   useEffect(() => {
     fetchInvoices();
   }, []);
@@ -18,14 +20,37 @@ const Invoices = () => {
     setInvoiceState(invoices);
   }, [invoices]);
 
+  const calcRevenue = (date) => {
+    if (!date) return setRevenue(0);
+
+    const day = new Date(date).toDateString();
+
+    const total = invoices
+      .filter((inv) => new Date(inv.createdAt).toDateString() === day)
+      .reduce((sum, inv) => sum + inv.total_price, 0);
+
+    setRevenue(total);
+  };
+
   const filtered = invoiceState.filter((inv) =>
-    searchText
-      ? inv._id.toLowerCase().includes(searchText.toLowerCase())
-      : true
+    searchText ? inv._id.toLowerCase().includes(searchText.toLowerCase()) : true
   );
 
   const columns = [
-    { title: "Mã hóa đơn", dataIndex: "_id" },
+    {
+      title: "Món",
+      dataIndex: "items",
+      render: (items) => (
+        <div>
+          {items.map((i) => (
+            <div key={i._id} className="mb-1">
+              <strong>{i.menu_id?.name || "Món"}</strong> x{i.quantity}
+              {i.note && <span className="text-gray-600"> – {i.note}</span>}
+            </div>
+          ))}
+        </div>
+      ),
+    },
     {
       title: "Số món",
       dataIndex: "items",
@@ -36,34 +61,34 @@ const Invoices = () => {
       dataIndex: "total_price",
       render: (v) => `${v.toLocaleString()} đ`,
     },
-    {
-      title: "Thời gian",
-      dataIndex: "createdAt",
-      render: (v) => new Date(v).toLocaleString(),
-    },
   ];
 
   return (
     <div className="lg:ml-[300px] mt-[64px] px-2 py-4 lg:p-6 min-h-screen">
       <div className="space-y-3 mb-4">
-        <div className="flex gap-4">
-          <Input
-            placeholder="Tìm kiếm theo mã hóa đơn..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+        <div className="flex flex-wrap gap-4 items-center">
+          <DatePicker
+            onChange={(date) => {
+              setSelectedDate(date);
+              calcRevenue(date);
+            }}
+            placeholder="Chọn ngày xem doanh thu"
             className="rounded-none"
           />
 
-          <Button type="primary" icon={<ExportOutlined />} className="rounded-none">
-            Xuất file
-          </Button>
-        </div>
-
-        <div className="flex justify-between">
           <Button type="primary" onClick={() => setOpenCreate(true)}>
             + Tạo hóa đơn
           </Button>
         </div>
+
+        {selectedDate && (
+          <div className="text-lg font-semibold">
+            Ngày {selectedDate.format("DD/MM/YYYY")} kiếm được:
+            <span className="text-green-600 ml-2">
+              {revenue.toLocaleString()} đ
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="bg-white p-4 shadow-lg">
@@ -75,7 +100,6 @@ const Invoices = () => {
           className="cursor-pointer"
         />
       </div>
-
 
       <InvoiceCreateModal open={openCreate} setOpen={setOpenCreate} />
     </div>

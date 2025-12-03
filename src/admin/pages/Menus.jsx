@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Button } from "antd";
-import { ExportOutlined } from "@ant-design/icons";
 import { useMenu } from "../../context/MenuContext";
 import MenuCreateModal from "../components/MenuCreateModal/MenuCreateModal";
 
@@ -46,12 +45,6 @@ const Menus = () => {
             className="rounded-none"
           />
 
-          <Button type="primary" icon={<ExportOutlined />} className="rounded-none">
-            Xuất file
-          </Button>
-        </div>
-
-        <div className="flex justify-between">
           <Button type="primary" onClick={() => setOpenCreate(true)}>
             + Thêm món
           </Button>
